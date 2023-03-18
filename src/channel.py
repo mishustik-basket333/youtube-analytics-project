@@ -25,6 +25,10 @@ class Channel:
         """Выводит в консоль информацию о канале."""
         print(self.channel_111)
 
+    @property
+    def channel_id(self):
+        return self.__channel_id
+
     @classmethod
     def get_service(cls):
         """Класс-метод возвращающий объект для работы с YouTube API"""
