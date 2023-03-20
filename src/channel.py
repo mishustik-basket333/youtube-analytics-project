@@ -18,8 +18,9 @@ class Channel:
         self.title = self.channel_111["items"][0]["snippet"]['title']
         self.description = self.channel_111["items"][0]["snippet"]['description']
         self.url = "https://www.youtube.com/channel/" + f"{channel_id}"
-        self.subscriber_сount = self.channel_111["items"][0]["statistics"]["viewCount"]
+        self.subscriber_сount = self.channel_111["items"][0]["statistics"]["subscriberCount"]
         self.video_count = self.channel_111["items"][0]["statistics"]["videoCount"]
+        self.view_vount = self.channel_111["items"][0]["statistics"]["viewCount"]
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
@@ -48,16 +49,62 @@ class Channel:
         my_file.write(data)
         my_file.close()
 
-# vdud = Channel('UCMCgOm8GZkHp8zJ6l7_hIuA')
-# vdud.print_info()
+    def __str__(self):
+        """Функция возвращает строку с названием и ссылку на канал по шаблону `<название_канала> (<ссылка_на_канал>)`"""
+        return f"{self.title} ({self.url})"
+
+    def __add__(self, other):
+        """Функция берет из экземпляров класса Chanel количество подписчиков и складывает их,
+         возвращая и присваивая общее значение в типе данных int к первому операнду, указанному в сложении
+         """
+        if not isinstance(other, Channel):
+            raise TypeError("Операнд справа должен иметь тип данных Chanell")
+        return int(self.subscriber_сount) + int(other.subscriber_сount)
+
+    def __sub__(self, other):
+        """Функция берет из экземпляров класса Chanel количество подписчиков.
+         Вычитает из первого указанного экземпляра второй экземпляр.
+         Возвращает и присваивает результат в типе данных int к первому операнду, указанному в сложении
+         """
+        if not isinstance(other, Channel):
+            raise TypeError("Операнд справа должен иметь тип данных Chanell")
+        return int(self.subscriber_сount) - int(other.subscriber_сount)
+
+    def __ge__(self, other):
+        """Функция берет из экземпляров класса Chanel количество подписчиков.
+         Возвращает True, если значение первого операнда больше или равно значению второго,
+         иначе возвращает False
+         """
+        if not isinstance(other, Channel):
+            raise TypeError("Операнд справа должен иметь тип данных Chanell")
+        data_1, data_2 = int(self.subscriber_сount), int(other.subscriber_сount)
+        if data_1 >= data_2:
+            return True
+        return False
+
+# if __name__ == "__main__":
+#     vdud = Channel('UCMCgOm8GZkHp8zJ6l7_hIuA')
+#     redactsiya = Channel('UC1eFXmJNkjITxPFWTy6RsWg')
+#     print(vdud.print_info())
+#     print(vdud.subscriber_сount)
+#     print(redactsiya.subscriber_сount)
+#     # Используем различные магические методы
+#     print(vdud)  # 'вДудь (https://www.youtube.com/channel/UCMCgOm8GZkHp8zJ6l7_hIuA)'
+#     print(vdud + redactsiya)  # 13970000
+#     print(vdud - redactsiya)  # 6630000
+#     print(redactsiya - vdud)  # -6630000
+#     print(vdud >= redactsiya)
+#     print(redactsiya >= vdud)# True
+#     vdud = Channel('UCMCgOm8GZkHp8zJ6l7_hIuA')
+#     vdud.print_info()
 #
-# print("test")
-# print(vdud.title)
-# print(vdud.description)
-# print(vdud.url)
-# print(vdud.subscriber_сount)
-# print(vdud.video_count)
-# print(vdud._Channel__channel_id)
-# vdud.channel_id = 'Новое название'
-# print(vdud._Channel__channel_id)
-# print(dir(vdud))
+#     print("test")
+#     print(vdud.title)
+#     print(vdud.description)
+#     print(vdud.url)
+#     print(vdud.subscriber_сount)
+#     print(vdud.video_count)
+#     print(vdud._Channel__channel_id)
+#     vdud.channel_id = 'Новое название'
+#     print(vdud._Channel__channel_id)
+#     print(dir(vdud))
