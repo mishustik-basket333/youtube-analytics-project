@@ -5,16 +5,39 @@ import os
 
 # import isodate
 
+class Youtube:
+    _api_key: str = os.getenv('YT_API_KEY')
+    _youtube = build('youtube', 'v3', developerKey=_api_key)
 
-class Channel:
+    @classmethod
+    def geet_channel(cls, channel_id):
+        return cls._youtube.channels().list(id=channel_id, part='snippet,statistics').execute()
+
+    @classmethod
+    def get_video(cls, video_id):
+        return cls._youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails', id=video_id).execute()
+
+    @classmethod
+    def get_playlist(cls, playlist_id):
+        return cls._youtube.playlists().list(id=playlist_id, part='contentDetails,snippet', maxResults=50, ).execute()
+
+    @classmethod
+    def get_playlist_videos(cls, playlist_id):
+        return cls._youtube.playlistItems().list(playlistId=playlist_id, part='contentDetails', maxResults=50,
+                                                 ).execute()
+
+
+class Channel(Youtube):
     """Класс для ютуб-канала"""
-    api_key: str = os.getenv('YT_API_KEY')
-    youtube = build('youtube', 'v3', developerKey=api_key)
+
+    # api_key: str = os.getenv('YT_API_KEY')
+    # youtube = build('youtube', 'v3', developerKey=api_key)
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
         self.__channel_id = channel_id
-        self.channel_111 = self.youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        # self.channel_111 = self.youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        self.channel_111 = self.geet_channel(self.__channel_id)
         self.title = self.channel_111["items"][0]["snippet"]['title']
         self.description = self.channel_111["items"][0]["snippet"]['description']
         self.url = "https://www.youtube.com/channel/" + f"{channel_id}"
@@ -33,11 +56,11 @@ class Channel:
     @classmethod
     def get_service(cls):
         """Класс-метод возвращающий объект для работы с YouTube API"""
-        return cls.youtube
+        return cls._youtube
 
     def to_json(self, file_json):
         f"""Сохраняет данные о канале в файл {file_json}.json в формате .json"""
-        data = {"api_key": Channel.api_key,
+        data = {"api_key": Channel._api_key,
                 "channel_id": self.__channel_id,
                 "title:": self.title,
                 "description": self.description,
