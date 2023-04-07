@@ -1,23 +1,30 @@
 from src.channel import Youtube
-# from googleapiclient.discovery import build
-# import os
+from googleapiclient.errors import HttpError
 
 
 class Video(Youtube):
     """Класс Video"""
-    # api_key: str = os.getenv('YT_API_KEY')
-    # youtube = build('youtube', 'v3', developerKey=api_key)
-
     def __init__(self, video_id):
-        self.__video_id = video_id
-        # self.video_response = self.youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
-        #                                                  id=self.__video_id).execute()
-        self.video_response = self.get_video(self.__video_id)
-        self.video_title: str = self.video_response['items'][0]['snippet']['title']
-        self.url = "https://www.youtube.com/channel/" + f"{self.__video_id}"
-        self.view_count: int = self.video_response['items'][0]['statistics']['viewCount']
-        self.like_count: int = self.video_response['items'][0]['statistics']['likeCount']
-        self.comment_count: int = self.video_response['items'][0]['statistics']['commentCount']
+        try:
+            self.__video_id = video_id
+            self.video_response = self.get_video(self.__video_id)
+            self.video_title: str = self.video_response['items'][0]['snippet']['title']
+            self.url = "https://www.youtube.com/channel/" + f"{self.__video_id}"
+            self.view_count: int = self.video_response['items'][0]['statistics']['viewCount']
+            self.like_count: int = self.video_response['items'][0]['statistics']['likeCount']
+            self.comment_count: int = self.video_response['items'][0]['statistics']['commentCount']
+
+        except HttpError as error_msg:
+            print(error_msg, "HttpError")
+            self.__video_id = video_id
+            self.video_response = self.video_title = self.url = self.title = None
+            self.view_count = self.like_count = self.comment_count = None
+
+        except IndexError as error_msg:
+            print(error_msg, "IndexError")
+            self.__video_id = video_id
+            self.video_response = self.video_title = self.url = self.title = None
+            self.view_count = self.like_count = self.comment_count = None
 
     def __str__(self):
         return self.video_title
